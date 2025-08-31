@@ -1,0 +1,23 @@
+{
+  "name": "project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "mj_bot.js",
+  "scripts": {
+    "chrome": "chrome.bat",
+    "playwright": "node automation.cjs",
+    "start": "concurrently \"npm run chrome\" \"npm run playwright\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "dotenv": "^17.2.1",
+    "googleapis": "^155.0.1",
+    "playwright": "^1.54.2"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
