@@ -211,6 +211,7 @@ async function insertImagesToCell(
   await page.keyboard.press("Tab", { delay: 300 });
   await page.keyboard.insertText(link);
   await page.waitForTimeout(3000);
+  await sleepTwoSecs();
   await page.keyboard.press("Tab", { delay: 300 });
   await page.keyboard.press("Tab", { delay: 300 });
   await page.keyboard.press("Enter", { delay: 300 });
