@@ -268,7 +268,7 @@ async function insertImagesToCell(
 
     if (existingUrl) {
       console.log(`Row ${row}: already has URL in column D — skipping.`);
-      imageLinksArray.push("");
+      imageLinksArray.push(existingUrl);
       indexForURLS++;
       continue;
     }
