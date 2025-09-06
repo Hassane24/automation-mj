@@ -11,12 +11,10 @@ function dlog(...args) {
 
 const CHANNEL_URL =
   "https://discord.com/channels/1382818633348026501/1382818633348026504";
-const SHEET_ID =
-  process.env.SHEET_ID || "1ibOWAjmOZMeEBtetqKq6-0wmxDM0eHWj8EsLSAu0Xc0";
-const TAB_NAME = process.env.TAB_NAME || "RECIPES";
-const PROMPT_COLUMN = process.env.PROMPT_COLUMN || "K";
-const START_ROW = parseInt(process.env.START_ROW || "2", 10);
-
+const SHEET_ID = "1ibOWAjmOZMeEBtetqKq6-0wmxDM0eHWj8EsLSAu0Xc0";
+const TAB_NAME = "RECIPES";
+const PROMPT_COLUMN = "K";
+const START_ROW = 2;
 if (!SHEET_ID) {
   console.error(
     "Please set SHEET_ID environment variable to your Google Sheet ID."
@@ -59,24 +57,26 @@ async function readSheetPrompts(sheets) {
     majorDimension: "COLUMNS",
   });
 
-  const kVals =
+  const promptValues =
     res.data.valueRanges &&
     res.data.valueRanges[0] &&
     res.data.valueRanges[0].values
       ? res.data.valueRanges[0].values[0]
       : [];
-  const dVals =
+  const existingUrlValues =
     res.data.valueRanges &&
     res.data.valueRanges[1] &&
     res.data.valueRanges[1].values
       ? res.data.valueRanges[1].values[0]
       : [];
-  const maxLen = Math.max(kVals.length, dVals.length);
+  const maxLen = Math.max(promptValues.length, existingUrlValues.length);
 
   const rows = [];
   for (let i = 0; i < maxLen; i++) {
-    const prompt = kVals[i] ? String(kVals[i]).trim() : "";
-    const existingUrl = dVals[i] ? String(dVals[i]).trim() : "";
+    const prompt = promptValues[i] ? String(promptValues[i]).trim() : "";
+    const existingUrl = existingUrlValues[i]
+      ? String(existingUrlValues[i]).trim()
+      : "";
     rows.push({ prompt, existingUrl, row: START_ROW + i });
   }
   return rows;
