@@ -105,7 +105,9 @@ async function waitForUpscaleButtons(page) {
       try {
         if (lastMessage.includes("U1")) {
           console.log("FOUND U1 BUTTON");
+          await sleepTwoSecs();
           await selectUpscaleButton(page);
+          await sleepTwoSecs();
           await getImageLinks(page);
           break;
         }
