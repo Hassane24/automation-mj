@@ -82,15 +82,35 @@ async function readSheetPrompts(sheets) {
   return rows;
 }
 
-async function writeUrlToSheet(sheets, row, url) {
-  const range = `${TAB_NAME}!D${row}`;
-  await sheets.spreadsheets.values.update({
-    spreadsheetId: SHEET_ID,
-    range,
-    valueInputOption: "RAW",
-    requestBody: { values: [[url]] },
-  });
+async function updateSheetInBatch(sheets, spreadsheetId, linksArray) {
+  const range = "RECIPES!D2:D";
+  const values = [linksArray];
+
+  try {
+    const requestBody = {
+      data: [
+        {
+          range: range,
+          majorDimension: "COLUMNS",
+          values: values,
+        },
+      ],
+      valueInputOption: "RAW",
+    };
+
+    const response = await sheets.spreadsheets.values.batchUpdate({
+      spreadsheetId,
+      resource: requestBody,
+    });
+
+    console.log("Batch update successful!");
+    console.log(`${response.data.totalUpdatedCells} cells updated.`);
+    return response.data;
+  } catch (err) {
+    console.error("The API returned an error:", err);
+  }
 }
+
 // waits for U1 button to appear
 // uses an infinite loop to keep getting the last element and check if the U1 button appeared
 async function waitForUpscaleButtons(page) {
@@ -286,7 +306,6 @@ async function insertImagesToCell(
       await discordPage.keyboard.press("Enter");
 
       await waitForUpscaleButtons(discordPage);
-      await writeUrlToSheet(sheets, row, imageLinksArray[indexForURLS]);
 
       console.log(imageLinksArray);
 
@@ -296,6 +315,7 @@ async function insertImagesToCell(
       continue;
     }
   } // end loop
+  await updateSheetInBatch(sheets, SHEET_ID, imageLinksArray);
   const sheetsPage = await chromeContext.newPage();
 
   await discordPage.close();
